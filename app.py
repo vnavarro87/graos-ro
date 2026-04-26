@@ -429,7 +429,7 @@ with tab1:
         height=480,
         hoverlabel=dict(bgcolor="#1e2130", font_color="white", bordercolor="#444"),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     st.caption(
         "Eixo esquerdo (verde): preço negociado na Bolsa de Chicago em centavos de dólar por bushel — referência internacional. "
@@ -532,7 +532,7 @@ with tab1:
             height=420,
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         )
-        st.plotly_chart(fig_rt, use_container_width=True)
+        st.plotly_chart(fig_rt, width='stretch')
 
         st.caption(
             f"Poder de compra = (índice da saca) ÷ (índice do fertilizante) × 100. "
@@ -734,12 +734,12 @@ with tab2:
         / 1e6
     )
 
-    fig_mapa = px.choropleth_mapbox(
+    fig_mapa = px.choropleth_map(
         df_mapa, geojson=geojson, locations="Municipio",
         featureidkey="properties.name",
         color="Receita_BRL_Mi",
         color_continuous_scale="Viridis",
-        mapbox_style="carto-darkmatter", zoom=5.6,
+        map_style="carto-darkmatter", zoom=5.6,
         center={"lat": -10.9, "lon": -62.8},
         opacity=0.7, hover_name="Municipio",
         labels={"Receita_BRL_Mi": "Receita (R$ Mi)"},
@@ -748,7 +748,7 @@ with tab2:
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
         paper_bgcolor="rgba(0,0,0,0)",
     )
-    st.plotly_chart(fig_mapa, use_container_width=True)
+    st.plotly_chart(fig_mapa, width='stretch')
 
     basis_label = (
         f"deságio variável por município (base US$ {basis_usd:+.2f}, ajustado por distância ao terminal)"
@@ -843,7 +843,7 @@ with tab2:
             font_color="white", showlegend=False,
             height=320, margin={"t": 10, "b": 0, "l": 0, "r": 0},
         )
-        st.plotly_chart(fig_top10, use_container_width=True)
+        st.plotly_chart(fig_top10, width='stretch')
         st.caption(
             f"Exposição = receita estimada de {cultura_sel.lower()} ÷ PIB Agropecuário municipal × 100. "
             f"Destaque em vermelho: {mun_sim}. "
@@ -961,7 +961,7 @@ with tab3:
             height=600,
             margin={"t": 20, "b": 0, "l": 0, "r": 0},
         )
-        st.plotly_chart(fig_be, use_container_width=True)
+        st.plotly_chart(fig_be, width='stretch')
 
     with col_g2:
         st.markdown("**Margem estimada no cenário atual (R$ Mi)**")
@@ -982,7 +982,7 @@ with tab3:
             height=600,
             margin={"t": 20, "b": 0, "l": 0, "r": 0},
         )
-        st.plotly_chart(fig_m, use_container_width=True)
+        st.plotly_chart(fig_m, width='stretch')
 
     custo_str = f"R$ {custo_ha:,.0f}/ha"
     if choque_frete > 0:
@@ -1163,7 +1163,7 @@ with tab4:
         margin={"t": 10, "b": 60, "l": 0, "r": 0},
         hoverlabel=dict(bgcolor="#1e2130", font_color="white", bordercolor="#444"),
     )
-    st.plotly_chart(fig_scatter, use_container_width=True)
+    st.plotly_chart(fig_scatter, width='stretch')
 
     # --- KPIs ---
     m1, m2, m3, m4 = st.columns(4)
