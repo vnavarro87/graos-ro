@@ -18,6 +18,9 @@ O heatmap original mostrava dados mas não respondia a pergunta: "em quantas sem
 **Distância geodésica (Haversine) para basis variável por município**
 Distância rodoviária real exigiria roteirização com dados que ou são privados ou exigem infraestrutura fora do escopo. Haversine é boa aproximação para análise de portfólio; para pricing operacional, não substitui.
 
+**yfinance como fonte de cotações CBOT**
+É wrapper não-oficial sem SLA de continuidade — pode ser interrompido sem aviso. Escolhido pela cobertura dos contratos CBOT sem custo; substituto natural seria a API da Bloomberg ou Refinitiv.
+
 ## Stack
 
 - **Python** + **Streamlit** + **Plotly**
@@ -72,7 +75,11 @@ Detalhamento completo em [METODOLOGIA.md](METODOLOGIA.md).
 
 Este é o segundo projeto de uma série sobre o agronegócio de Rondônia. O primeiro — [Lavouras RO](https://github.com/vnavarro87/lavouras-ro) — mapeou o que o estado produz e onde. Este responde a pergunta seguinte: quanto vale essa produção, e por que o município muda o preço que o produtor recebe?
 
-Desenvolvido com apoio de Claude Code para acelerar implementação. Decisões de arquitetura, validação de fontes e tratamento de edge cases foram feitos por mim.
+Implementação acelerada com uso de Claude Code como copiloto. Definição do problema, escolha de fontes, decisões de arquitetura, validações de integridade e tratamento de edge cases conduzidos por mim.
+
+## Limitações de escopo
+
+Este projeto cobre soja e milho em RO com dados públicos disponíveis. Análise de hedge cambial, sazonalidade histórica e cruzamento com custos regionais são tratados como projetos separados.
 
 ## Licença
 
