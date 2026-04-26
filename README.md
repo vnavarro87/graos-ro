@@ -1,24 +1,29 @@
 # Grãos de Rondônia — Preço, Câmbio e Risco
 
-Soja e milho são cotados em Chicago, em dólar, em bushel. O fazendeiro de Rondônia recebe em reais, por saca, numa fazenda a centenas de quilômetros do porto. A diferença entre esses dois mundos — o **basis** — era algo que eu queria entender de verdade, não apenas ler sobre.
+Soja e milho são cotados em Chicago, em dólar, em bushel. O fazendeiro de Rondônia recebe em reais, por saca, numa fazenda a centenas de quilômetros do porto. A diferença entre esses dois mundos — o **basis** — determina se a safra dá lucro ou não.
 
-Este projeto é o resultado desse estudo: uma ferramenta interativa que conecta a cotação da CBOT ao preço efetivo que cada município de Rondônia recebe, mostrando quando o câmbio vira problema e quanto a distância ao porto pesa na conta.
+Quis entender como esse deságio funciona na prática: o que muda entre municípios, qual câmbio transforma uma safra boa em prejuízo, e como visualizar isso de forma que faça sentido para quem toma a decisão.
 
-## O que o projeto mostra
+## Decisões de design
 
-- Cotação histórica de Soja e Milho na CBOT (5 anos, semanal) sobreposta ao dólar PTAX
-- KPIs em tempo aproximado de mercado: preço em US$/bushel, R$/tonelada e R$/saca
-- Simulador de receita por município ou para o estado todo: cenários de preço e câmbio
-- Mapa de receita estimada por município
-- **Break-even cambial município a município:** dólar mínimo para não operar no prejuízo
-- Scatter histórico CBOT × câmbio com curva de break-even — quantas semanas dos últimos 5 anos estiveram no vermelho
+**PTAX em vez do dólar comercial do Yahoo Finance**
+O PTAX é a referência oficial do Banco Central para liquidação de contratos cambiais — é o câmbio que o contrato usa, não o que aparece na tela do celular. Usar Yahoo Finance aqui seria conveniente mas tecnicamente incorreto para análise de risco.
+
+**Basis calibrado por fontes públicas, não real-time**
+O basis real depende de contratos privados entre tradings e produtores — não é público. A alternativa foi calibrar com médias de USDA FAS, CONAB e ABIOVE: defensável, auditável, e honesto sobre o que é estimativa.
+
+**Scatter histórico + curva de break-even em vez de heatmap**
+O heatmap original mostrava dados mas não respondia a pergunta: "em quantas semanas dos últimos 5 anos o produtor teria operado no prejuízo?". O scatter com a curva de break-even responde diretamente — e posiciona o momento atual no contexto histórico.
+
+**Distância geodésica (Haversine) para basis variável por município**
+Distância rodoviária real exigiria roteirização com dados que ou são privados ou exigem infraestrutura fora do escopo. Haversine é boa aproximação para análise de portfólio; para pricing operacional, não substitui.
 
 ## Stack
 
 - **Python** + **Streamlit** + **Plotly**
-- **yfinance** para cotações CBOT
-- **Banco Central do Brasil (SGS)** para PTAX e índice de fertilizantes (IPA-OG série 7456)
-- **IBGE/SIDRA** para produção municipal (PAM 2023)
+- **yfinance** — cotações CBOT
+- **BCB SGS** — PTAX (série 1) e IPA-OG Fertilizantes (série 7456)
+- **IBGE/SIDRA** — produção municipal PAM 2023
 
 ## Como rodar
 
@@ -29,13 +34,13 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-O app já inclui um parquet com cotações recentes. Para atualizar antes de rodar:
+O parquet com cotações já está no repo. Para atualizar antes de rodar:
 
 ```bash
 python coleta_mercado.py
 ```
 
-Ou use o botão "Atualizar cotações" na sidebar — ele busca CBOT + PTAX + IPA-OG diretamente.
+Ou use o botão "Atualizar cotações" na sidebar do app.
 
 ## Estrutura
 
@@ -53,19 +58,21 @@ commodities_ro/
 
 ## Limitações conhecidas
 
-- **Custos de produção:** o break-even usa Custo Operacional Total (COT) da CONAB para Rondônia (Cerejeiras/Cone Sul). Variações intramunicipais de terra e mão de obra não estão modeladas — o slider permite ajustar.
-- **Basis variável por município** usa distância geodésica (linha reta) ao terminal logístico, não distância rodoviária real.
-- **Dados de produção** são anuais (PAM 2023). Não há atualização infra-anual.
+- **Basis por município é aproximação.** Usa distância em linha reta ao hub logístico mais próximo. Se eu refizesse, usaria dados de frete ANTT por trecho — mais preciso, mas dependeria de coleta manual periódica que não automatizei.
+
+- **Custo de produção uniforme entre municípios.** O COT da CONAB é referência de Cerejeiras. Variações regionais de preço de terra e mão de obra existem mas não têm fonte pública municipalizada disponível.
+
+- **Cotações com até 15 min de defasagem** (Yahoo Finance) e PTAX divulgado só ao final do dia útil. Adequado para análise de cenário; não para decisão de comercialização em tempo real.
+
+- **Dados de produção com defasagem de ~1 ano.** PAM 2023 é o último ano fechado. Não há forma de atualizar isso antes do IBGE publicar o ciclo seguinte.
 
 Detalhamento completo em [METODOLOGIA.md](METODOLOGIA.md).
 
-## Sobre este projeto
+## Sobre
 
-[Lavouras RO](https://github.com/vnavarro87/lavouras-ro) mapeou *o que Rondônia produz e onde*. Este projeto tenta responder a pergunta seguinte: *quanto vale essa produção — e por que o município onde o fazendeiro está muda o preço que ele recebe?*
+Este é o segundo projeto de uma série sobre o agronegócio de Rondônia. O primeiro — [Lavouras RO](https://github.com/vnavarro87/lavouras-ro) — mapeou o que o estado produz e onde. Este responde a pergunta seguinte: quanto vale essa produção, e por que o município muda o preço que o produtor recebe?
 
-Não tenho formação em ciência de dados nem em economia agrícola. Trabalho em tecnologia, tenho interesse genuíno no agronegócio de Rondônia e queria aprender fazendo. Construí este projeto com auxílio intensivo de inteligência artificial (Claude, da Anthropic) — o que me permitiu implementar modelos e pipelines que eu não conseguiria escrever sozinho neste estágio. A IA ajudou com código; as perguntas, as fontes e as escolhas metodológicas são minhas.
-
-Se algo parece errado ou pode melhorar, abre uma issue.
+Desenvolvido com apoio de Claude Code para acelerar implementação. Decisões de arquitetura, validação de fontes e tratamento de edge cases foram feitos por mim.
 
 ## Licença
 
