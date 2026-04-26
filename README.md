@@ -1,6 +1,6 @@
-# Commodities de Rondônia — Grãos × Mercado
+# Grãos de Rondônia — Preço, Câmbio e Risco
 
-Análise da produção agrícola de Rondônia sob a perspectiva do mercado financeiro: cotação internacional na CBOT, câmbio do dólar e simulação de receita e risco cambial por município.
+Análise de soja e milho em Rondônia sob a perspectiva do mercado internacional: cotação na Bolsa de Chicago, câmbio do dólar, simulação de receita e risco cambial por município.
 
 Cobre **Soja** e **Milho** — as duas principais lavouras temporárias do estado, ambas cotadas em USD/bushel na bolsa de Chicago.
 
@@ -46,16 +46,19 @@ commodities_ro/
 
 ## Limitações conhecidas
 
-- **Boi Gordo:** APIs públicas brasileiras (IPEADATA, BCB SGS) deprecadas; CEPEA não expõe API estável. Será incluído em V2 com pipeline dedicado.
-- **Custos de produção:** o break-even usa custo médio nacional como referência. Variações regionais de logística (frete Arco Norte) não estão modeladas — usuário pode ajustar via slider.
-- **Cotação na CBOT** reflete o mercado internacional. O preço de balcão pago ao produtor brasileiro tem deságio de frete e basis — não modelado nesta versão.
+- **Custos de produção:** o break-even usa referência CONAB para Rondônia (Cerejeiras/Cone Sul). Variações intramunicipais de terra e mão de obra não estão modeladas — o slider permite ajustar o custo para refletir realidades específicas.
+- **Basis variável por município** usa distância geodésica (linha reta) ao terminal logístico, não distância rodoviária real. Boa aproximação para análise de portfólio; não substitui pricing operacional de trader.
 - **Dados de produção** são anuais (PAM 2023). Não há atualização infra-anual.
 
 Detalhamento completo em [METODOLOGIA.md](METODOLOGIA.md).
 
 ## Sobre
 
-Segundo projeto público com foco na interseção entre **dados públicos do agronegócio** e **mercado financeiro**. Construído como peça de portfólio para demonstrar pipeline ETL multi-fonte, modelagem de cenários e visualização orientada a decisão.
+[Lavouras RO](https://github.com/vnavarro87/lavouras-ro) mapeou *o que Rondônia produz e onde*. Este projeto responde a pergunta seguinte: *quanto vale essa produção para o fazendeiro — e por que o município onde ele está muda o preço que ele recebe?*
+
+O ponto central é o **basis**: o deságio entre a cotação de Chicago e o preço efetivo na fazenda, que varia com a distância ao terminal logístico, o corredor de escoamento e o câmbio do dia. O simulador torna isso visível município a município — incluindo o câmbio mínimo que cada produtor precisa para não operar no prejuízo.
+
+Construído como peça de portfólio para demonstrar pipeline ETL multi-fonte, modelagem de cenários com dados públicos e visualização orientada a decisão.
 
 ## Licença
 
