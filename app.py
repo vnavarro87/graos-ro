@@ -822,10 +822,14 @@ with tab2:
         opacity=0.7, hover_name="Municipio",
         labels={"Receita_BRL_Mi": "Receita (R$ Mi)"},
     )
+    fig_mapa.update_traces(
+        hovertemplate="<b>%{hovertext}</b><br>Receita estimada: R$ %{z:,.0f} Mi<extra></extra>"
+    )
     fig_mapa.update_layout(
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
         paper_bgcolor="rgba(0,0,0,0)",
         hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
+        coloraxis_colorbar=dict(tickformat=",.0f"),
     )
     st.plotly_chart(fig_mapa, width='stretch', config={'displayModeBar': False})
 
