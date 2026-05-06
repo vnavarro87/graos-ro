@@ -450,10 +450,10 @@ with tab1:
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font_color="white",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin={"t": 30, "b": 0, "l": 0, "r": 0},
+        legend=dict(orientation="h", yanchor="bottom", y=-0.15, xanchor="right", x=1),
+        margin={"t": 30, "b": 60, "l": 0, "r": 0},
         height=480,
-        hoverlabel=dict(bgcolor="#1e2130", font_color="white", bordercolor="#444"),
+        hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
     )
     st.plotly_chart(fig, width='stretch')
 
@@ -553,6 +553,7 @@ with tab1:
             margin={"t": 20, "b": 0, "l": 0, "r": 0},
             height=380,
             showlegend=False,
+            hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
         )
         st.plotly_chart(fig_rt, width='stretch')
 
@@ -586,9 +587,10 @@ with tab1:
                 font_color="white",
                 xaxis_title="",
                 yaxis_title=f"Índice (base 100 = {data_inicio})",
-                margin={"t": 10, "b": 0, "l": 0, "r": 0},
+                margin={"t": 10, "b": 60, "l": 0, "r": 0},
                 height=320,
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                legend=dict(orientation="h", yanchor="bottom", y=-0.15, xanchor="right", x=1),
+                hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
             )
             st.plotly_chart(fig_comp, width='stretch')
             st.caption(
@@ -801,6 +803,7 @@ with tab2:
     fig_mapa.update_layout(
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
         paper_bgcolor="rgba(0,0,0,0)",
+        hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
     )
     st.plotly_chart(fig_mapa, width='stretch')
 
@@ -896,6 +899,7 @@ with tab2:
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
             font_color="white", showlegend=False,
             height=320, margin={"t": 10, "b": 0, "l": 0, "r": 0},
+            hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
         )
         st.plotly_chart(fig_top10, width='stretch')
         st.caption(
@@ -1014,6 +1018,7 @@ with tab3:
             font_color="white", showlegend=False,
             height=600,
             margin={"t": 20, "b": 0, "l": 0, "r": 0},
+            hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
         )
         st.plotly_chart(fig_be, width='stretch')
 
@@ -1035,6 +1040,7 @@ with tab3:
             font_color="white", showlegend=False,
             height=600,
             margin={"t": 20, "b": 0, "l": 0, "r": 0},
+            hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
         )
         st.plotly_chart(fig_m, width='stretch')
 
@@ -1218,7 +1224,7 @@ with tab4:
         legend=dict(orientation="h", yanchor="top", y=-0.12, xanchor="center", x=0.5),
         height=500,
         margin={"t": 10, "b": 60, "l": 0, "r": 0},
-        hoverlabel=dict(bgcolor="#1e2130", font_color="white", bordercolor="#444"),
+        hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
     )
     st.plotly_chart(fig_scatter, width='stretch')
 
@@ -1380,7 +1386,7 @@ with tab5:
         customdata=sz_stats["delta_pct"],
         hovertemplate=(
             "<b>%{x}</b><br>"
-            "Índice: %{y:.3f}<br>"
+            "Índice: %{y:.2f}<br>"
             "vs média anual: %{customdata:+.1f}%<extra></extra>"
         ),
     ))
@@ -1398,9 +1404,10 @@ with tab5:
         yaxis=dict(title="Índice sazonal (preço ÷ média móvel anual)", tickformat=".2f",
                    gridcolor="#2b2f3e"),
         xaxis=dict(title="", gridcolor="#2b2f3e"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin={"t": 40, "b": 0, "l": 0, "r": 0},
+        legend=dict(orientation="h", yanchor="bottom", y=-0.15, xanchor="right", x=1),
+        margin={"t": 40, "b": 60, "l": 0, "r": 0},
         height=380,
+        hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
     )
     st.plotly_chart(fig_sz, width='stretch')
 
@@ -1511,8 +1518,8 @@ with tab5:
             customdata=df_h[["ptax_plantio", "ptax_colheita"]].values,
             hovertemplate=(
                 "<b>Safra %{x}</b><br>"
-                f"PTAX em {ciclo['desc_plantio']}: R$ %{{customdata[0]:.4f}}<br>"
-                f"PTAX em {ciclo['desc_colheita']}: R$ %{{customdata[1]:.4f}}<br>"
+                f"PTAX em {ciclo['desc_plantio']}: R$ %{{customdata[0]:.2f}}<br>"
+                f"PTAX em {ciclo['desc_colheita']}: R$ %{{customdata[1]:.2f}}<br>"
                 "Variação: <b>%{y:+.1f}%</b><extra></extra>"
             ),
             name="Variação PTAX intra-safra",
@@ -1530,6 +1537,7 @@ with tab5:
             margin={"t": 30, "b": 0, "l": 0, "r": 0},
             height=360,
             bargap=0.25,
+            hoverlabel=dict(bgcolor="#1e2130", bordercolor="#00d26a", font=dict(color="#ffffff")),
         )
         st.plotly_chart(fig_v, width='stretch')
 
