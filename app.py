@@ -439,11 +439,16 @@ with tab1:
     )
     st.subheader(f"Histórico: {cultura_sel} e câmbio — {janela_sel}")
 
+    _hover_dates_commodity = [fmt_mes_pt(d) for d in serie_commodity_plot.index]
+    _hover_dates_dolar = [fmt_mes_pt(d) for d in serie_dolar_plot.index]
+
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     fig.add_trace(
         go.Scatter(
             x=serie_commodity_plot.index, y=serie_commodity_plot.values,
             name=f"{cultura_sel} — Chicago (US$/bu)", line=dict(color="#00d26a", width=2),
+            customdata=_hover_dates_commodity,
+            hovertemplate=f"<b>%{{customdata}}</b><br>{cultura_sel}: %{{y:.2f}} US$/bu<extra></extra>",
         ),
         secondary_y=False,
     )
@@ -451,6 +456,8 @@ with tab1:
         go.Scatter(
             x=serie_dolar_plot.index, y=serie_dolar_plot.values,
             name="Dólar PTAX (R$)", line=dict(color="#ffbd45", width=2, dash="dot"),
+            customdata=_hover_dates_dolar,
+            hovertemplate="<b>%{customdata}</b><br>Dólar PTAX: R$ %{y:.2f}<extra></extra>",
         ),
         secondary_y=True,
     )
