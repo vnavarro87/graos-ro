@@ -133,6 +133,14 @@ def _haversine_km(lat1, lon1, lat2, lon2):
     return 2 * R * np.arcsin(np.sqrt(a))
 
 
+def _reset_keys_callback(*keys):
+    """Remove keys do session_state. Usado como on_click de botão de reset.
+    on_click executa antes do rerun, garantindo que widgets re-renderizem
+    com value= padrão em vez de manter valor cacheado pelo session_state."""
+    for k in keys:
+        st.session_state.pop(k, None)
+
+
 # Hubs de transbordo para escoamento de soja/milho do Centro-Oeste/Norte.
 # Modelo aditivo: custo_total_BRL_t = km × tarifa_rod + custo_fixo_pos_hub
 # custo_fixo_pos_hub: trecho pós-hub até o porto de exportação, modal específico.
@@ -696,17 +704,17 @@ with tab2:
                 _key_dolar_sim in st.session_state
                 and abs(st.session_state[_key_dolar_sim] - _dolar_atual_val) > 0.01
             )
-            if (_preco_alterado or _dolar_alterado) and st.button(
-                "↺ resetar",
-                key=f"reset_mkt_{cultura_sel}",
-                help=(
-                    f"Volta aos valores de mercado: "
-                    f"US$ {_preco_atual_usd:.2f}/bu × R$ {_dolar_atual_val:.2f}"
-                ),
-            ):
-                st.session_state.pop(_key_preco_sim, None)
-                st.session_state.pop(_key_dolar_sim, None)
-                st.rerun()
+            if _preco_alterado or _dolar_alterado:
+                st.button(
+                    "↺ resetar",
+                    key=f"reset_mkt_{cultura_sel}",
+                    help=(
+                        f"Volta aos valores de mercado: "
+                        f"US$ {_preco_atual_usd:.2f}/bu × R$ {_dolar_atual_val:.2f}"
+                    ),
+                    on_click=_reset_keys_callback,
+                    args=(_key_preco_sim, _key_dolar_sim),
+                )
 
         preco_sim_cbot_usd = st.slider(
             f"Preço {cultura_sel} (Chicago) · atual: US$ {_preco_atual_usd:.2f}/bu",
@@ -969,14 +977,13 @@ with tab3:
         with _ttl_rc:
             st.markdown("**Custo e cenário de estresse**")
         with _btn_rc:
-            if st.button(
+            st.button(
                 "↺ resetar",
                 key=f"reset_rc_{cultura_sel}",
                 help=f"Volta a custo CONAB R$ {_custo_default_rc:,.0f}/ha e choque de frete = 0.",
-            ):
-                st.session_state.pop(_key_custo_rc, None)
-                st.session_state.pop(_key_choque_rc, None)
-                st.rerun()
+                on_click=_reset_keys_callback,
+                args=(_key_custo_rc, _key_choque_rc),
+            )
     else:
         st.markdown("**Custo e cenário de estresse**")
 
@@ -1221,13 +1228,13 @@ with tab4:
                 )
             with _rst_col:
                 st.markdown("<div style='height: 28px'></div>", unsafe_allow_html=True)  # alinha vertical
-                if st.button(
+                st.button(
                     "↺",
                     key=f"reset_ms_{cultura_sel}",
                     help=f"Volta a R$ {_custo_default_ms:,.0f}/ha (CONAB)",
-                ):
-                    st.session_state.pop(_key_custo_ms, None)
-                    st.rerun()
+                    on_click=_reset_keys_callback,
+                    args=(_key_custo_ms,),
+                )
         else:
             custo_ha_ms = st.slider(
                 _slider_label,
