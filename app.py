@@ -432,7 +432,7 @@ st.markdown(
 # --- ABAS ---
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Preços e Câmbio", "Simulador de Receita", "Risco Cambial",
-    "Cenários Combinados", "Sazonalidade e Hedge",
+    "Cenários Históricos", "Sazonalidade e Hedge",
 ])
 
 # --- ABA 1: COTAÇÕES × CÂMBIO ---
@@ -1092,10 +1092,34 @@ with tab3:
         * BUSHELS_POR_TONELADA[cultura_sel] * df_be["preco_efetivo_usd"]
     )
     # Break-even: Custo = Receita_USD × Dólar  =>  Dólar = Custo / Receita_USD
-    df_be["Dolar_Breakeven"] = df_be["Custo_Total_BRL"] / df_be["Receita_USD"]
+    # Guard: se Receita_USD ≤ 0 (preço efetivo negativo por basis muito negativo),
+    # o cenário é inviável — não há câmbio que cubra o custo. Marca como NaN
+    # para excluir do ranking sem quebrar o gráfico.
+    _municipios_inviaveis = df_be[df_be["Receita_USD"] <= 0]["Municipio"].tolist()
+    df_be["Dolar_Breakeven"] = np.where(
+        df_be["Receita_USD"] > 0,
+        df_be["Custo_Total_BRL"] / df_be["Receita_USD"].replace(0, np.nan),
+        np.nan,
+    )
     df_be["Margem_Atual_BRL_Mi"] = (
         df_be["Receita_USD"] * dolar_atual - df_be["Custo_Total_BRL"]
     ) / 1e6
+    if _municipios_inviaveis:
+        st.warning(
+            f"Cenário extremo: o preço efetivo (Chicago + basis) ficou ≤ 0 em "
+            f"{len(_municipios_inviaveis)} município(s). Esses não aparecem no ranking de "
+            f"câmbio mínimo (não há câmbio que cubra o custo). "
+            f"Municípios afetados: {', '.join(_municipios_inviaveis[:5])}"
+            f"{'…' if len(_municipios_inviaveis) > 5 else ''}."
+        )
+    df_be = df_be.dropna(subset=["Dolar_Breakeven"]).copy()
+
+    if df_be.empty:
+        st.error(
+            "Nenhum município com cenário viável nos parâmetros atuais "
+            "(preço Chicago + basis ≤ 0 em todos). Ajuste preço CBOT, basis ou volte ao padrão."
+        )
+        st.stop()
 
     media_be = df_be["Dolar_Breakeven"].mean()
     pior = df_be.loc[df_be["Dolar_Breakeven"].idxmax()]

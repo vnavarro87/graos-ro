@@ -22,7 +22,7 @@ Tudo que está no app é derivado de **dados públicos identificáveis** (sem he
   - [Aba 1 — Preços e Câmbio](#aba-1--preços-e-câmbio)
   - [Aba 2 — Simulador de Receita](#aba-2--simulador-de-receita)
   - [Aba 3 — Risco Cambial](#aba-3--risco-cambial)
-  - [Aba 4 — Cenários Combinados](#aba-4--cenários-combinados)
+  - [Aba 4 — Cenários Históricos](#aba-4--cenários-históricos)
   - [Aba 5 — Sazonalidade e Variação Cambial Intra-Safra](#aba-5--sazonalidade-e-variação-cambial-intra-safra)
 - [Catálogo de insights](#catálogo-de-insights)
 - [Limitações honestas](#limitações-honestas)
@@ -117,7 +117,7 @@ Verde = positivo, vermelho = prejuízo. Slider de **choque de frete adicional** 
 
 ---
 
-### Aba 4 — Cenários Combinados
+### Aba 4 — Cenários Históricos
 
 **Composta de duas seções:**
 
