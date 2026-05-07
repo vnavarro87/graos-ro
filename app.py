@@ -1081,6 +1081,19 @@ with tab3:
         )
         st.plotly_chart(fig_m, width='stretch', config={'displayModeBar': False})
 
+    st.markdown(
+        '<div class="context-box">'
+        "<b>Volume não é resiliência.</b> O município que mais produz não é necessariamente o de maior margem por hectare. "
+        "Dois fatores definem quem aguenta cenário adverso: <b>produtividade</b> (kg/ha — quanto se colhe na mesma área) "
+        "e <b>basis logístico</b> (deságio até o porto). O modelo aplica o mesmo custo CONAB a todos os municípios, "
+        "então a margem por hectare varia só com receita: produtividade × (CBOT + basis) × câmbio. "
+        "Município no vermelho aqui não significa <i>inviável</i> — significa <b>margem apertada no cenário modelado</b>. "
+        "Produtores reais podem ter custo próprio diferente, contratos antecipados (CPR/NDF) "
+        "e basis privado melhor que o default — coisas que este modelo não captura."
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
     custo_str = f"R$ {custo_ha:,.0f}/ha"
     if choque_frete > 0:
         custo_str += f" + choque de frete R$ {choque_frete:,.0f}/ha = R$ {custo_total_ha:,.0f}/ha"
