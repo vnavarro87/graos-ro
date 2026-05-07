@@ -670,7 +670,7 @@ with tab2:
         _slr_perf, _btn_perf = st.columns([5, 1])
         with _slr_perf:
             perfil_pct = st.slider(
-                "Produtividade vs. média municipal",
+                "Produtividade vs. média municipal · padrão: 100%",
                 min_value=60, max_value=140, value=100, step=10,
                 format="%d%%", key=_perfil_key,
                 help="100% = produtor médio. 80% = abaixo da média. 120% = acima da média.",
@@ -694,21 +694,18 @@ with tab2:
         # Deságio — botão ↺ pequeno ao lado, espaço sempre reservado
         _basis_default = BASIS_DEFAULT_USD[cultura_sel]
         st.markdown("**Deságio ao produtor**")
-        st.caption(
-            "Diferença entre o preço de Chicago e o que o produtor recebe na fazenda — "
-            "inclui frete, qualidade e prazo. Negativo é o normal."
-        )
         _slr_basis, _btn_basis = st.columns([5, 1])
         with _slr_basis:
             basis_usd = st.slider(
-                f"Deságio — {cultura_sel}",
+                f"Deságio — {cultura_sel} · padrão: US$ {_basis_default:+.2f}/bu",
                 min_value=-3.0, max_value=0.5,
                 value=_basis_default, step=0.05,
                 format="US$ %+.2f/bu", key=_basis_key,
                 help=(
-                    "Mais negativo = produtor recebe ainda menos que Chicago. "
-                    f"Referência RO: US$ {_basis_default:+.2f}/bu — "
-                    "média 2023–25 (USDA GAIN, CONAB Logística, ABIOVE)."
+                    "Diferença entre Chicago e o que o produtor recebe na fazenda — "
+                    "inclui frete, qualidade e prazo. Negativo é o normal. "
+                    f"Padrão US$ {_basis_default:+.2f}/bu = média 2023–25 "
+                    "(USDA GAIN, CONAB Logística, ABIOVE)."
                 ),
             )
         with _btn_basis:
@@ -740,14 +737,14 @@ with tab2:
         _slr_p, _btn_p = st.columns([5, 1])
         with _slr_p:
             preco_sim_cbot_usd = st.slider(
-                f"Preço {cultura_sel} (Chicago) · atual: US$ {_preco_atual_usd:.2f}/bu",
+                f"Preço {cultura_sel} (Chicago) · padrão: US$ {_preco_atual_usd:.2f}/bu",
                 min_value=float(serie_commodity.min() * 0.7) / 100,
                 max_value=float(serie_commodity.max() * 1.3) / 100,
                 value=_preco_atual_usd,
                 step=0.05,
                 format="US$ %.2f/bu",
                 key=_key_preco_sim,
-                help="Cotação internacional na bolsa de Chicago.",
+                help="Cotação internacional na bolsa de Chicago. Padrão = cotação de hoje.",
             )
         with _btn_p:
             st.markdown("<div style='height: 28px'></div>", unsafe_allow_html=True)
@@ -764,14 +761,14 @@ with tab2:
         _slr_d, _btn_d = st.columns([5, 1])
         with _slr_d:
             dolar_sim = st.slider(
-                f"Dólar comercial · atual: R$ {_dolar_atual_val:.2f}",
+                f"Dólar comercial · padrão: R$ {_dolar_atual_val:.2f}",
                 min_value=float(serie_dolar.min() * 0.85),
                 max_value=float(serie_dolar.max() * 1.15),
                 value=_dolar_atual_val,
                 step=0.05,
                 format="R$ %.2f",
                 key=_key_dolar_sim,
-                help="Cotação do dólar usada no cenário. Dólar mais alto = mais reais por venda.",
+                help="Cotação do dólar usada no cenário. Padrão = PTAX de hoje. Dólar mais alto = mais reais por venda.",
             )
         with _btn_d:
             st.markdown("<div style='height: 28px'></div>", unsafe_allow_html=True)
@@ -801,21 +798,21 @@ with tab2:
                     hub_nome, km_mun_sim, _ = rota
                     hub_curto = hub_nome.split(" (")[0]
                     st.caption(
-                        f"Preço que o produtor recebe: **US$ {preco_sim_efetivo:.2f}/bu** "
-                        f"(Chicago US$ {preco_sim_cbot_usd:.2f} + deságio deste município "
-                        f"US$ {basis_mun_sim:+.2f} · escoa via {hub_curto}, {km_mun_sim:.0f} km)"
+                        f"Preço que o produtor recebe: **US\\$ {preco_sim_efetivo:.2f}/bu** "
+                        f"(Chicago US\\$ {preco_sim_cbot_usd:.2f} + deságio deste município "
+                        f"US\\$ {basis_mun_sim:+.2f} · escoa via {hub_curto}, {km_mun_sim:.0f} km)"
                     )
                 else:
-                    st.caption(f"Preço que o produtor recebe: US$ {preco_sim_efetivo:.2f}/bu (Chicago + deságio)")
+                    st.caption(f"Preço que o produtor recebe: US\\$ {preco_sim_efetivo:.2f}/bu (Chicago + deságio)")
             else:
                 st.caption(
-                    f"Preço que o produtor recebe: **US$ {preco_sim_efetivo:.2f}/bu** "
-                    f"(Chicago US$ {preco_sim_cbot_usd:.2f} + deságio US$ {basis_mun_sim:+.2f})"
+                    f"Preço que o produtor recebe: **US\\$ {preco_sim_efetivo:.2f}/bu** "
+                    f"(Chicago US\\$ {preco_sim_cbot_usd:.2f} + deságio US\\$ {basis_mun_sim:+.2f})"
                 )
         else:
             st.caption(
-                f"Preço médio ponderado ao produtor: **US$ {preco_sim_efetivo:.2f}/bu** "
-                f"(Chicago US$ {preco_sim_cbot_usd:.2f} + deságio médio US$ {basis_mun_sim:+.2f})"
+                f"Preço médio ponderado ao produtor: **US\\$ {preco_sim_efetivo:.2f}/bu** "
+                f"(Chicago US\\$ {preco_sim_cbot_usd:.2f} + deságio médio US\\$ {basis_mun_sim:+.2f})"
             )
 
     with col_output:
