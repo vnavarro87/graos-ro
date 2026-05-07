@@ -737,14 +737,14 @@ with tab2:
         _slr_p, _btn_p = st.columns([5, 1])
         with _slr_p:
             preco_sim_cbot_usd = st.slider(
-                f"Preço {cultura_sel} (Chicago) · padrão: US$ {_preco_atual_usd:.2f}/bu",
+                f"Preço {cultura_sel} (Chicago) · hoje: US$ {_preco_atual_usd:.2f}/bu",
                 min_value=float(serie_commodity.min() * 0.7) / 100,
                 max_value=float(serie_commodity.max() * 1.3) / 100,
                 value=_preco_atual_usd,
                 step=0.05,
                 format="US$ %.2f/bu",
                 key=_key_preco_sim,
-                help="Cotação internacional na bolsa de Chicago. Padrão = cotação de hoje.",
+                help="Cotação internacional na bolsa de Chicago. Atualiza a cada cache (1h).",
             )
         with _btn_p:
             st.markdown("<div style='height: 28px'></div>", unsafe_allow_html=True)
@@ -761,14 +761,14 @@ with tab2:
         _slr_d, _btn_d = st.columns([5, 1])
         with _slr_d:
             dolar_sim = st.slider(
-                f"Dólar comercial · padrão: R$ {_dolar_atual_val:.2f}",
+                f"Dólar comercial · hoje: R$ {_dolar_atual_val:.2f}",
                 min_value=float(serie_dolar.min() * 0.85),
                 max_value=float(serie_dolar.max() * 1.15),
                 value=_dolar_atual_val,
                 step=0.05,
                 format="R$ %.2f",
                 key=_key_dolar_sim,
-                help="Cotação do dólar usada no cenário. Padrão = PTAX de hoje. Dólar mais alto = mais reais por venda.",
+                help="PTAX (Banco Central). Atualiza a cada cache (1h). Dólar mais alto = mais reais por venda.",
             )
         with _btn_d:
             st.markdown("<div style='height: 28px'></div>", unsafe_allow_html=True)
