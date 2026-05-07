@@ -228,10 +228,17 @@ dolar_atual = float(_serie_dolar_pre.iloc[-1]) if not _serie_dolar_pre.empty els
 cultura_sel = st.session_state.get("cultura_sel", list(CULTURAS.keys())[0])
 
 # Lê valores dos controles de simulação do session_state (definidos em Aba 2)
-# Garante que sidebar e KPIs usem o valor mais recente mesmo antes de Aba 2 renderizar
-_basis_key = f"basis_{cultura_sel}"
+# Garante que sidebar e KPIs usem o valor mais recente mesmo antes de Aba 2 renderizar.
+# Counters de reset (key dinâmica) precisam ser lidos aqui também para construir as keys.
+_counter_basis = f"reset_counter_basis_{cultura_sel}"
+_n_basis = st.session_state.get(_counter_basis, 0)
+_basis_key = f"basis_{cultura_sel}_{_n_basis}"
 basis_usd = st.session_state.get(_basis_key, BASIS_DEFAULT_USD[cultura_sel])
-perfil_pct = st.session_state.get("perfil_pct", 100)
+
+_counter_perfil = "reset_counter_perfil"
+_n_perfil = st.session_state.get(_counter_perfil, 0)
+_perfil_key = f"perfil_pct_{_n_perfil}"
+perfil_pct = st.session_state.get(_perfil_key, 100)
 perfil_label = (
     "Médio" if perfil_pct == 100
     else f"{'Acima' if perfil_pct > 100 else 'Abaixo'} da média ({perfil_pct}%)"
@@ -658,11 +665,25 @@ with tab2:
             mun_sim = None
             st.caption("Agregado de todos os municípios produtores de Rondônia.")
 
-        st.markdown("**Perfil do produtor**")
+        # Perfil do produtor — com reset opcional ao default 100%
+        _ttl_perf, _btn_perf = st.columns([3, 2])
+        with _ttl_perf:
+            st.markdown("**Perfil do produtor**")
+        with _btn_perf:
+            _perfil_atual = st.session_state.get(_perfil_key, 100)
+            if _perfil_atual != 100:
+                st.button(
+                    "↺ resetar",
+                    key=f"reset_perfil_btn_{_n_perfil}",
+                    help="Volta a 100% (produtor médio do município).",
+                    on_click=_bump_reset_counter,
+                    args=(_counter_perfil,),
+                )
+
         perfil_pct = st.slider(
             "Produtividade vs. média municipal",
             min_value=60, max_value=140, value=100, step=10,
-            format="%d%%", key="perfil_pct",
+            format="%d%%", key=_perfil_key,
             help="100% = produtor médio do município. 80% = abaixo da média típica. 120% = acima da média.",
         )
         perfil_label = (
@@ -671,7 +692,21 @@ with tab2:
         )
         fator = perfil_pct / 100
 
-        st.markdown("**Deságio ao produtor**")
+        # Deságio — com reset opcional ao default da fonte (USDA/CONAB/ABIOVE)
+        _basis_default = BASIS_DEFAULT_USD[cultura_sel]
+        _ttl_basis, _btn_basis = st.columns([3, 2])
+        with _ttl_basis:
+            st.markdown("**Deságio ao produtor**")
+        with _btn_basis:
+            _basis_atual = st.session_state.get(_basis_key, _basis_default)
+            if abs(_basis_atual - _basis_default) > 0.01:
+                st.button(
+                    "↺ resetar",
+                    key=f"reset_basis_btn_{cultura_sel}_{_n_basis}",
+                    help=f"Volta a US$ {_basis_default:+.2f}/bu (referência setorial 2023–25).",
+                    on_click=_bump_reset_counter,
+                    args=(_counter_basis,),
+                )
         st.caption(
             "Diferença entre o preço de Chicago e o que o produtor recebe na fazenda — "
             "inclui frete, qualidade e prazo. Negativo é o normal."
@@ -679,12 +714,12 @@ with tab2:
         basis_usd = st.slider(
             f"Deságio — {cultura_sel}",
             min_value=-3.0, max_value=0.5,
-            value=BASIS_DEFAULT_USD[cultura_sel], step=0.05,
+            value=_basis_default, step=0.05,
             format="US$ %+.2f/bu", key=_basis_key,
             help=(
                 "Mais negativo = produtor recebe ainda menos que Chicago. "
                 "Menos negativo = logística mais barata ou prêmio de qualidade. "
-                f"Referência RO: US$ {BASIS_DEFAULT_USD[cultura_sel]:+.2f}/bu — "
+                f"Referência RO: US$ {_basis_default:+.2f}/bu — "
                 "média 2023–25 (USDA GAIN, CONAB Logística, ABIOVE)."
             ),
         )
