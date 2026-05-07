@@ -288,8 +288,8 @@ with st.sidebar:
             format="R$ %.0f/t por 100 km",
             help=(
                 "Custo marginal de frete rodoviário de grãos. "
-                "Default R$15/t por 100 km — calibrado pela tarifa ANTT 2024: "
-                "~R$160/t para Vilhena→Rondonópolis (~1.050 km). "
+                "Padrão R\\$ 15/t por 100 km — calibrado pela tarifa ANTT 2024: "
+                "~R\\$ 160/t para Vilhena→Rondonópolis (~1.050 km). "
                 "Quanto maior, mais o modelo pune municípios distantes do hub."
             ),
         )
@@ -1029,10 +1029,10 @@ with tab3:
                 format="R$ %.0f/ha",
                 key=_key_custo_rc,
                 help=(
-                    f"Default: custo operacional total (COT) CONAB para "
+                    f"Padrão: custo operacional total (COT) CONAB para "
                     f"{'Cerejeiras/RO' if cultura_sel == 'Soja' else 'Cone Sul/RO milho safrinha'}, "
                     f"safra 2024/25. Inclui insumos, operações, mão de obra e arrendamento. "
-                    f"Fonte: CONAB - Custos de Produção Agrícola."
+                    f"Fonte: CONAB — Custos de Produção Agrícola."
                 )
             )
         with _btn_c:
@@ -1281,7 +1281,7 @@ with tab4:
                     min_value=2000.0, max_value=10000.0,
                     value=_custo_default_ms, step=100.0,
                     format="R$ %.0f/ha", key=_key_custo_ms,
-                    help=f"Default CONAB: R$ {_custo_default_ms:,.0f}/ha (COT safra 2024/25).",
+                    help=f"Padrão CONAB: R\\$ {_custo_default_ms:,.0f}/ha (COT safra 2024/25).",
                 )
             with _rst_col:
                 st.markdown("<div style='height: 28px'></div>", unsafe_allow_html=True)  # alinha vertical
@@ -1298,7 +1298,7 @@ with tab4:
                 min_value=2000.0, max_value=10000.0,
                 value=_custo_default_ms, step=100.0,
                 format="R$ %.0f/ha", key=_key_custo_ms,
-                help=f"Default CONAB: R$ {_custo_default_ms:,.0f}/ha (COT safra 2024/25).",
+                help=f"Padrão CONAB: R\\$ {_custo_default_ms:,.0f}/ha (COT safra 2024/25).",
             )
 
     # --- PARÂMETROS DE BREAK-EVEN ---
